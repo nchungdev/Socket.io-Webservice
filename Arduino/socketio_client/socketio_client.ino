@@ -4,9 +4,9 @@
 
 
 const char* ssid = "BON FPT";
-const char* password = "0909363799";
+const char* password = "kemtuchon19k";
 // Server Ip
-String host = "192.168.3.6";
+String host = "192.168.1.119";
 // Server port
 int port = 3000;
 

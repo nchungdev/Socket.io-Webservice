@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>IOT-server</title>
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+    <script src="../socket.io/socket.io.js"></script>
+
+</head>
+
+<body>
+    <style type="text/css">
+        .sp-picker-container {
+            width: 500px
+        }
+
+    </style>
+
+    <div class="container" style="padding: 20px">
+        <div style="display: flex; align-content: center; justify-content: center;">
+            <div>
+                <h2 style="font-weight: 900; text-align: center; margin: 0; margin-bottom: 20px">LED CONTROLL</h2>
+            </div>
+        </div>
+        <div style="display: flex; align-items: center; justify-content: center;" id="control">
+            <div style="align-self: flex-start;">
+                <div>
+                    <input id="button" data-width="50" data-height="30" type="checkbox" data-toggle="toggle">
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+<script>
+    var socket = io('192.168.3.6:3000');
+    $('#button').change(function(event) {
+        var data = $(this).prop('checked');
+        var json = "{'id':1,'name':'LED 1','state':" + data + "}"
+        socket.emit('led-change', json);
+        console.log(json);
+    });
+
+</script>
+
+</html>

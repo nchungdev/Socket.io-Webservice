@@ -1,0 +1,19 @@
+﻿#include <ArduinoJson.h>
+
+// khai báo bộ đệm
+StaticJsonBuffer<300> buffered;
+ 	   
+// parse chuổi nhận được thành 1 mảng
+// incoming_packet là chuổi cần chuyển
+JsonArray& arr = buffered.parseArray(incoming_packet);
+
+for (int i = 0; i < arr.size(); i++)
+{
+	// lấy mỗi phần tử trong mảng ra
+	JsonObject& parser = arr[i];
+     	 int Id = parser["id"];
+     	 int Signal = parser["signal"];
+  
+    	  Serial.println("value: "); 
+     	 Serial.println(Signal);
+}

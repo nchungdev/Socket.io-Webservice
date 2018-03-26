@@ -6,7 +6,7 @@
 const char* ssid = "BON FPT";
 const char* password = "kemtuchon19k";
 // Server Ip
-String host = "192.168.1.119";
+String host = "192.168.1.118";
 // Server port
 int port = 3000;
 

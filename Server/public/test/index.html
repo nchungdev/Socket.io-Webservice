@@ -25,7 +25,7 @@
             </div>
         </div>
         <div style="display: flex; align-items: center; justify-content: center;" id="control">
-            <div style="align-self: flex-start;">
+            <div style="align-self: flex-start;" class="checkAllGroup">
                 <div>
                     <label>LED 1</label>
                     <input class="checkLed" value="1" data-width="50" data-height="30" type="checkbox" data-toggle="toggle">
@@ -33,6 +33,10 @@
                 <div>
                     <label>LED 2</label>
                     <input class="checkLed" value="2" data-width="50" data-height="30" type="checkbox" data-toggle="toggle">
+                </div>
+                <div>
+                    <label>All LED</label>
+                    <input class="checkAll" data-width="50" data-height="30" type="checkbox" data-toggle="toggle">
                 </div>
             </div>
         </div>
@@ -53,6 +57,18 @@
         timeout: 120000,
     });
     $('.checkLed').change(function(event) {
+        var id = $(this).val();
+        var data = $(this).prop('checked');
+        listDevice.forEach(function(device) {
+            if (device.id == id) {
+                var json = "{'id':" + id + ",'name':'" + device.name + "','state':" + data + "}"
+                socket.emit('led-change', json);
+                console.log(json);
+            }
+        })
+
+    });
+    $('.checkAllGroup .checkLed').change(function(event) {
         var id = $(this).val();
         var data = $(this).prop('checked');
         listDevice.forEach(function(device) {

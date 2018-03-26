@@ -4,6 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <title>IOT-server</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
     <script src="../socket.io/socket.io.js"></script>
 
@@ -26,19 +27,42 @@
         <div style="display: flex; align-items: center; justify-content: center;" id="control">
             <div style="align-self: flex-start;">
                 <div>
-                    <input id="button" data-width="50" data-height="30" type="checkbox" data-toggle="toggle">
+                    <label>LED 1</label>
+                    <input class="checkLed" value="1" data-width="50" data-height="30" type="checkbox" data-toggle="toggle">
+                </div>
+                <div>
+                    <label>LED 2</label>
+                    <input class="checkLed" value="2" data-width="50" data-height="30" type="checkbox" data-toggle="toggle">
                 </div>
             </div>
         </div>
     </div>
 </body>
 <script>
-    var socket = io('192.168.3.6:3000');
-    $('#button').change(function(event) {
+    var socket = io('192.168.1.118:3000');
+    var listDevice = [];
+    jQuery.ajax({
+        url: "/devices",
+        type: "GET",
+        contentType: 'application/json; charset=utf-8',
+        success: function(resultData) {
+            listDevice = resultData;
+        },
+        error: function(jqXHR, textStatus, errorThrown) {},
+
+        timeout: 120000,
+    });
+    $('.checkLed').change(function(event) {
+        var id = $(this).val();
         var data = $(this).prop('checked');
-        var json = "{'id':1,'name':'LED 1','state':" + data + "}"
-        socket.emit('led-change', json);
-        console.log(json);
+        listDevice.forEach(function(device) {
+            if (device.id == id) {
+                var json = "{'id':" + id + ",'name':'" + device.name + "','state':" + data + "}"
+                socket.emit('led-change', json);
+                console.log(json);
+            }
+        })
+
     });
 
 </script>

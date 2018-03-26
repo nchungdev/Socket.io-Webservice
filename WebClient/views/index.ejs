@@ -6,7 +6,7 @@
     <title>IOT-server</title>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
-    <script src="../socket.io/socket.io.js"></script>
+    <script src="http://192.168.3.6:3000/socket.io/socket.io.js"></script>
 
 </head>
 
@@ -43,18 +43,11 @@
     </div>
 </body>
 <script>
-    var socket = io('192.168.1.118:3000');
+    var socket = io('192.168.3.6:3000');
     var listDevice = [];
-    jQuery.ajax({
-        url: "/devices",
-        type: "GET",
-        contentType: 'application/json; charset=utf-8',
-        success: function(resultData) {
-            listDevice = resultData;
-        },
-        error: function(jqXHR, textStatus, errorThrown) {},
-
-        timeout: 120000,
+    $.getJSON('http://192.168.3.6:3000/devices', function(data) {
+        console.log(data);
+        listDevice = data;
     });
     $('.checkLed').change(function(event) {
         var id = $(this).val();
@@ -68,17 +61,34 @@
         })
 
     });
-    $('.checkAllGroup .checkLed').change(function(event) {
-        var id = $(this).val();
-        var data = $(this).prop('checked');
+    $(function check() {
+        var leds = $(".checkLed");
         listDevice.forEach(function(device) {
-            if (device.id == id) {
-                var json = "{'id':" + id + ",'name':'" + device.name + "','state':" + data + "}"
-                socket.emit('led-change', json);
-                console.log(json);
+            for (var i = 0; i < leds.length; i++) {
+                var id = leds.eq(i).val();
+                if (device.id == id) {
+                    leds.eq(i).prop('checked', device.state);
+                    var json = "{'id':" + id + ",'name':'" + device.name + "','state':" + leds.eq(i).prop('checked') + "}";
+                    socket.emit('led-change', json);
+                }
             }
         })
+    });
 
+
+    $('.checkAll').change(function(event) {
+        var childs = $(this).parents(".checkAllGroup").find(".checkLed");
+        var dataAll = $(this).prop('checked');
+        listDevice.forEach(function(device) {
+            for (var i = 0; i < childs.length; i++) {
+                var id = childs.eq(i).val();
+                if (device.id == id) {
+                    childs.eq(i).prop('checked', dataAll);
+                    var json = "{'id':" + id + ",'name':'" + device.name + "','state':" + dataAll + "}";
+                    socket.emit('led-change', json);
+                }
+            }
+        })
     });
 
 </script>

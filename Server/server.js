@@ -1,5 +1,6 @@
 require('dotenv').config();
 var express = require('express');
+var cors = require('cors');
 var app = express();
 var server = require('http').createServer(app);
 var io = require('socket.io')(server);
@@ -11,14 +12,26 @@ var deviceController = require("./controller/deviceController");
 server.listen(port, function () {
     console.log('Server listening at port %d', port);
 });
+app.use(cors());
+
+app.use(function (req, res, next) {
+    res.header("Access-Control-Allow-Origin", "*");
+    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+    next();
+});
 
 app.use(express.static(__dirname + '/public'));
 var list_device = [];
+
+// middleware 
+
 io.on('connection', function (socket) {
     console.log('New client connect'.gray);
+    list_device.push(socket.id);
+    socket.broadcast.emit('list-device', list_device);
     socket.on('list-device', function (data) {
-        console.log(data);
         socket.broadcast.emit('list-device', data);
+        console.log(data);
     });
     socket.on('led-change', function (data) {
         socket.broadcast.emit('led-change', data);

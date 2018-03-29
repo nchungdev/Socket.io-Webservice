@@ -30,7 +30,9 @@
         "webpack-config": "^7.0.0",
         "body-parser": "^1.18.2",
         "mongoose": "^5.0.11",
-        "cors": "*"
+        "cors": "*",
+        "socketio-auth": "*"
+
 
     },
     "name": "server",
